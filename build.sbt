@@ -1,4 +1,4 @@
-name := "hello-akka"
+name := "akka_crawler"
 
 version := "1.0"
 
