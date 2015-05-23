@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.1.6" % "test",
   "junit" % "junit" % "4.11" % "test",
   "com.novocode" % "junit-interface" % "0.10" % "test",
-  "com.ning" % "async-http-client" % "1.7.19"
+  "com.ning" % "async-http-client" % "1.7.19",
+  "org.jsoup" % "jsoup" % "1.8.1"
 )
 
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-v")

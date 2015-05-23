@@ -21,17 +21,17 @@ class Receptionist extends Actor {
 
   val waiting: Receive = {
     case Get(url) =>
-      context.become(runNext(Vector(Job(sender, url))))
+      context.become(runNext(Vector(Job(sender(), url))))
   }
 
   def running(queue: Vector[Job]): Receive = {
     case Controller.Result(links) =>
       val job = queue.head
       job.client ! Result(job.url, links)
-      context.stop(sender)
+      context.stop(sender())
       context.become(runNext(queue.tail))
     case Get(url) =>
-      context.become(enqueueJob(queue, Job(sender, url)))
+      context.become(enqueueJob(queue, Job(sender(), url)))
   }
 
   def runNext(queue: Vector[Job]): Receive = {

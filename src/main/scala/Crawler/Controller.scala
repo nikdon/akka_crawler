@@ -2,6 +2,7 @@ package Crawler
 
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, ReceiveTimeout}
+
 import scala.concurrent.duration._
 
 
@@ -12,6 +13,7 @@ object Controller {
 
 
 class Controller extends Actor with ActorLogging {
+
   import Crawler.Controller._
 
   var cache = Set.empty[String]

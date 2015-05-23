@@ -1,11 +1,11 @@
 package Crawler
 
 
-import java.util.concurrent.Executor
-
 import akka.actor.{Actor, Status}
 import akka.pattern.pipe
-import scala.concurrent.ExecutionContext
+import org.jsoup.Jsoup
+
+import scala.collection.JavaConverters._
 
 
 object Getter {
@@ -15,9 +15,10 @@ object Getter {
 
 
 class Getter(url: String, depth: Int) extends Actor {
+
   import Crawler.Getter._
 
-  implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
+  implicit val executor = context.dispatcher
 
   WebClient get url pipeTo self
 
@@ -27,7 +28,7 @@ class Getter(url: String, depth: Int) extends Actor {
         context.parent ! Controller.Check(link, depth)
       stop()
     case _: Status.Failure => stop()
-    case Abort             => stop()
+    case Abort => stop()
   }
 
   def stop(): Unit = {
@@ -35,16 +36,12 @@ class Getter(url: String, depth: Int) extends Actor {
     context.stop(self)
   }
 
-  val A_TAG = "(?i)<a ([^>]+)>.+?</a>".r
-  val HREF_ATTR = """\s*(?i)href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^'">\s]+))\s*""".r
-
   def findLinks(body: String): Iterator[String] = {
+    val document = Jsoup.parse(body, url)
+    val links = document.select("a[href]")
     for {
-      anchor <- A_TAG.findAllMatchIn(body)
-      HREF_ATTR(dquot, quot, bare) <- anchor.subgroups
-    } yield if (dquot != null) dquot
-    else if (quot != null) quot
-    else bare
+      link <- links.iterator().asScala
+    } yield link.absUrl("href")
   }
 
 }

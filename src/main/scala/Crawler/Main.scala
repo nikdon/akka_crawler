@@ -12,7 +12,7 @@ class Main extends Actor {
 
   val receptionist = context.actorOf(Props[Receptionist], "receptionist")
 
-  receptionist ! Get("http://www.yandex.ru")
+  receptionist ! Get("http://www.google.com")
 
   context.setReceiveTimeout(10.seconds)
 
